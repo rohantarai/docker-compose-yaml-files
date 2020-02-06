@@ -1,0 +1,28 @@
+## to run this file, type command -> docker-compose -f mongodb_replicaset_client.yml up/down/start/stop
+## if you want to connect to docker mongodb then url should contain the mongodb container name -> mongodb://mongodb_replicaset_primary:27017 (modify also in MONGOCLIENT_DEFAULT_CONNECTION_URL)
+## if you want to connect to local windows/mac/linux mongodb then url should contain localhost -> mongodb://localhost:27017 (modify also in MONGOCLIENT_DEFAULT_CONNECTION_URL)
+## if you want to connect to a docker mongodb container's network then run this file inside that directory where you ran the mongodb-replicaset.yml file so that this client container will also get deployed on the same network.
+## make sure your port 5000 is not occupied by any application.
+version: '2'
+
+networks:
+  network:
+    driver: bridge
+
+services:
+  mongodb-replicaset-client:
+    image: 'mongoclient/mongoclient:2.2.0'
+    container_name: mongodb_replicaset_client
+    ports:
+      - 5001:3000
+    environment:
+      - MONGO_URL=mongodb://root:password123@mongodb_replicaset_primary:27017
+      - MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://root:password123@mongodb_replicaset_primary:27017/rrtms?replicaSet=replicaset&retryWrites=true&w=majority&authSource=admin
+    networks:
+      - network
+    volumes:
+      - 'client_data:/mongodb_replicaset_client_data'
+      
+volumes:
+  client_data:
+    driver: local

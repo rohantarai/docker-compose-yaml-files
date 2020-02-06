@@ -1,0 +1,29 @@
+## to run this file, type command -> docker-compose -f couchbase.yml up/down/start/stop
+version: '2'
+
+networks:
+  network:
+    driver: bridge
+
+services:
+  couchbase:
+    image: 'couchbase:community-6.0.0'
+    container_name: couchbase
+    ## "restart" will always start this service automatically when docker application starts and also it will restart the service if it fails.
+    #restart: always
+    ## it will restart the service if it fails.
+    #restart: on-failure
+    ports:
+     - 8091:8091
+     - 8092:8092
+     - 8093:8093
+     - 8094:8094
+     - 11210:11210
+    networks:
+      - network
+    volumes:
+      - 'data:/couchbase_data'
+      
+volumes:
+  data:
+    driver: local

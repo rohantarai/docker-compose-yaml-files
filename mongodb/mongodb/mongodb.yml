@@ -1,0 +1,28 @@
+## to run this file, type command -> docker-compose -f mongodb.yml up/down/start/stop
+version: '2'
+
+networks:
+  network:
+    driver: bridge
+
+services:
+  mongodb:
+    image: 'mongo:4.2.0-bionic'
+    container_name: mongodb
+    ## "restart" will always start this service automatically when docker application starts and also it will restart the service if it fails.
+    #restart: always
+    ## it will restart the service if it fails.
+    #restart: on-failure
+    networks:
+      - network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27017:27017
+    volumes:
+      - 'data:/mongodb_data'
+      
+volumes:
+  data:
+    driver: local

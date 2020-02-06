@@ -1,0 +1,72 @@
+## add this line to hosts file -> 127.0.0.1 mongodb-primary mongodb-secondary mongodb-arbiter
+## to run this file, type command -> docker-compose -f mongo-replicaset.yml up/down/start/stop
+## if your replicaset is even number(excluding arbiter) then you need arbiter, else comment out the arbiter
+version: '2'
+
+## networks will be required if any other containers want to communicate/connect to these services. default network for this compose file is '<dirname>_default'
+networks:
+  network:
+    driver: bridge
+
+services:
+  mongodb-primary:
+    image: 'bitnami/mongodb:4.0'
+    container_name: mongodb_replicaset_primary
+    ports:
+      - 27017:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      # primary host username: root
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    networks:
+      - network
+    volumes:
+      - 'master_data:/bitnami'
+
+  mongodb-secondary:
+    image: 'bitnami/mongodb:4.0'
+    container_name: mongodb_replicaset_secondary
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    networks:
+      - network  
+    volumes:
+      - 'secondary_data:/bitnami'
+
+  mongodb-arbiter:
+    image: 'bitnami/mongodb:4.0'
+    container_name: mongodb_replicaset_arbiter
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    networks:
+      - network  
+    volumes:
+      - 'arbiter_data:/bitnami'
+
+volumes:
+  master_data:
+    driver: local
+  arbiter_data:
+    driver: local
+  secondary_data:
+    driver: local
+    
+## if one of the container/service fails/restarts then an error will occur as
+## BadValue: Received heartbeat from member with the same member ID as ourself: 0/1
+## to fix this, open another terminal and run command -> docker container restart <arbiter-container-id>/<primary-container-id>/<secondary-container-id>

@@ -1,0 +1,29 @@
+## to run this file, type command -> docker-compose -f mongodb-client.yml up/down/start/stop
+## <username>:<password> are optional, if you dont have username, password then no need to use these.
+## if you want to connect to docker mongodb then url should contain the mongodb container name -> mongodb://<username>:<password>@mongo:27017 (modify also in MONGOCLIENT_DEFAULT_CONNECTION_URL)
+## if you want to connect to local windows/mac/linux mongodb then url should contain localhost -> mongodb://<username>:<password>@localhost:27017 (modify also in MONGOCLIENT_DEFAULT_CONNECTION_URL)
+## if you want to connect to a docker mongodb container's network then run this file inside that directory where you ran the mongodb.yml file so that this client container will also get deployed on the same network.
+## make sure your port 5000 is not occupied by any application.
+version: '2'
+
+networks:
+  network:
+    driver: bridge
+    
+services:
+  mongodb-client:
+    image: 'mongoclient/mongoclient:2.2.0'
+    container_name: mongodb_client
+    ports:
+      - 5000:3000
+    environment:
+      - MONGO_URL=mongodb://root:root@mongodb:27017
+      #- MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://root:root@mongodb:27017/test?retryWrites=true&w=majority
+    networks:
+      - network
+    volumes:
+      - 'client_data:/mongodb_client_data'
+      
+volumes:
+  client_data:
+    driver: local

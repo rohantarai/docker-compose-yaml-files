@@ -1,0 +1,9 @@
+-for container shell access
+docker exec -it <container-name> bash
+
+-for mongo shell access inside container shell
+mongo 127.0.0.1:27017
+
+
+https://github.com/mongo-express/mongo-express/issues/437
+https://stackoverflow.com/questions/51592866/docker-with-mongo-and-express

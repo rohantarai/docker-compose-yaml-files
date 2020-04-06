@@ -1,5 +1,5 @@
 ## to run this file, type command -> docker-compose -f kafka.yml up/down/start/stop
-version: '2'
+version: '3'
 
 networks:
   network:
@@ -7,10 +7,12 @@ networks:
 
 services:
   zookeeper:
-    image: 'bitnami/zookeeper:3.5.7'
+    image: 'bitnami/zookeeper:3'
     container_name: kafka_zookeeper
     ports:
       - '2181:2181'
+    networks:
+      - network
     volumes:
       - 'zookeeper_data:/bitnami/zookeeper'
     environment:
@@ -20,39 +22,17 @@ services:
       
       
   kafka1:
-    image: 'bitnami/kafka:2.4.0'
-    container_name: kafka-01
-    hostname: dev.kafka-01.com
+    image: 'bitnami/kafka:2'
+    container_name: kafka01
+    hostname: dev.kafka1.com
     ports:
-      - '9092'
+      - '9092:9092'
+    networks:
+      - network
     volumes:
       - 'data1:/bitnami/kafka1_data'
-      - './kafka.keystore.jks:/opt/bitnami/kafka/conf/certs/kafka.keystore.jks:ro'
-      - './kafka.truststore.jks:/opt/bitnami/kafka/conf/certs/kafka.truststore.jks:ro'
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_LISTENERS=SASL_SSL://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=SASL_SSL://:9092
-      - KAFKA_ZOOKEEPER_USER=kafka
-      - KAFKA_ZOOKEEPER_PASSWORD=kafka_password
-      - KAFKA_INTER_BROKER_USER=interuser
-      - KAFKA_INTER_BROKER_PASSWORD=interpassword
-      - KAFKA_BROKER_USER=user
-      - KAFKA_BROKER_PASSWORD=password
-      - KAFKA_CERTIFICATE_PASSWORD=certificatePassword123
-    depends_on:
-      - zookeeper
-      
-  kafka2:
-    image: 'bitnami/kafka:2.4.0'
-    container_name: kafka-02
-    hostname: dev.kafka-02.com
-    ports:
-      - '9092'
-    volumes:
-      - 'data2:/bitnami/kafka2_data'
-      - './kafka.keystore.jks:/opt/bitnami/kafka/conf/certs/kafka.keystore.jks:ro'
-      - './kafka.truststore.jks:/opt/bitnami/kafka/conf/certs/kafka.truststore.jks:ro'
+      - './kafka1.keystore.jks:/opt/bitnami/kafka/conf/certs/kafka.keystore.jks:ro'
+      - './kafka1.truststore.jks:/opt/bitnami/kafka/conf/certs/kafka.truststore.jks:ro'
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_LISTENERS=SASL_SSL://:9092
@@ -71,6 +51,4 @@ volumes:
   zookeeper_data:
     driver: local
   data1:
-    driver: local
-  data2:
     driver: local

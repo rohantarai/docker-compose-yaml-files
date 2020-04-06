@@ -1,4 +1,4 @@
-## to run this file, type command -> docker-compose -f mongodb.yml up/down/start/stop
+## to run this file, type command -> docker-compose -f jenkins.yml up/down/start/stop
 version: '3'
 
 networks:
@@ -6,23 +6,22 @@ networks:
     driver: bridge
 
 services:
-  mongodb:
-    image: 'mongo:4.2.0-bionic'
-    container_name: mongodb
+  jenkins:
+    image: 'jenkins/jenkins:lts'
+    container_name: jenkins
     ## "restart" will always start this service automatically when docker application starts and also it will restart the service if it fails.
     #restart: always
     ## it will restart the service if it fails.
     #restart: on-failure
+    ports:
+     - 80:8080
+     - 443:8443
+     - 50000:50000
     networks:
       - network
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-    ports:
-      - 27017:27017
     volumes:
-      - 'data:/mongodb_data'
+      - 'home:/var/jenkins_home'
       
 volumes:
-  data:
+  home:
     driver: local

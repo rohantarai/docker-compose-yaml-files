@@ -1,6 +1,6 @@
 ## to run this file, type command -> docker-compose -f mysql.yml up/down/start/stop
 ## if you get error as "ERROR: Invalid interpolation format for "environment" option in service "mysql", then escape the $ character in the password by writing extra $
-version: '2'
+version: '3'
 
 networks:
   network:

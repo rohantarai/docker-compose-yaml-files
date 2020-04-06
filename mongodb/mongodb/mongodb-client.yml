@@ -4,7 +4,7 @@
 ## if you want to connect to local windows/mac/linux mongodb then url should contain localhost -> mongodb://<username>:<password>@localhost:27017 (modify also in MONGOCLIENT_DEFAULT_CONNECTION_URL)
 ## if you want to connect to a docker mongodb container's network then run this file inside that directory where you ran the mongodb.yml file so that this client container will also get deployed on the same network.
 ## make sure your port 5000 is not occupied by any application.
-version: '2'
+version: '3'
 
 networks:
   network:

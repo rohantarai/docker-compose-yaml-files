@@ -1,7 +1,7 @@
 ## add this line to hosts file -> 127.0.0.1 mongodb-primary mongodb-secondary mongodb-arbiter
 ## to run this file, type command -> docker-compose -f mongo-replicaset.yml up/down/start/stop
 ## if your replicaset is even number(excluding arbiter) then you need arbiter, else comment out the arbiter
-version: '2'
+version: '3'
 
 ## networks will be required if any other containers want to communicate/connect to these services. default network for this compose file is '<dirname>_default'
 networks:

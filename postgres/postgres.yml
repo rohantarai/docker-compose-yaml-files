@@ -1,5 +1,5 @@
 ## to run this file, type command -> docker-compose -f postgres.yml up/down/start/stop
-version: '2'
+version: '3'
 
 networks:
   network:
